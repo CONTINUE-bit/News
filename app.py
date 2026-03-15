@@ -31,7 +31,7 @@ category = st.sidebar.selectbox(
     ["general", "business", "technology", "sports", "entertainment", "science", "health"],
     format_func=lambda x: {
         "general": "전체", "business": "경제/경영", "technology": "IT/기술",
-        "sports": "스포츠", "entertainment": "연터테인먼트", "science": "과학", "health": "건강"
+        "sports": "스포츠", "entertainment": "엔터", "science": "과학", "health": "건강"
     }.get(x)
 )
 
