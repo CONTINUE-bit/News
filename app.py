@@ -13,7 +13,7 @@ except KeyError:
     st.error("보안 오류: API 키가 설정되지 않았습니다. .streamlit/secrets.toml 파일을 확인하세요.")
     st.stop()
 
-# 3. Gemini 2.5 Flash 설정
+# 3. Gemini 3.1 Flash  설정
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-3.1-flash-lite-preview')
 
