@@ -15,7 +15,7 @@ except KeyError:
 
 # 3. Gemini 2.5 Flash 설정
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-2.5-flash')
+model = genai.GenerativeModel('gemini-3.1-flash-lite-preview')
 
 # --- 세션 상태 초기화 (데이터 기억용) ---
 if "messages" not in st.session_state:
