@@ -54,32 +54,27 @@ if st.sidebar.button("브리핑 생성 시작"):
         # --- [핵심 기능] 다국어 검색어 자동 번역 매커니즘 ---
         search_target = search_query
         if search_query:
-            # 입력된 언어가 무엇이든 영어 검색어로 변환 (Cross-lingual Search)
-            trans_prompt = f"Translate the search term '{search_query}' into a professional English keyword for a global news API. Output ONLY the translated keyword."
-            trans_res = model.generate_content(trans_prompt)
-            search_target = trans_res.text.strip()
-            st.toast(f"🔍 AI 검색어 최적화 완료: {search_target}")
+    # 카테고리가 'sports'면 게임 제외, 'entertainment'나 'technology'면 게임 포함 등 전략 수립
+    context_instruction = ""
+        if category == "sports":
+            context_instruction = "Focus on real-world sports matches, scores, and athletes. EXCLUDE video games or e-sports."
+        elif category == "technology" or category == "business":
+            context_instruction = "Focus on the industry, business deals, and technological trends, including gaming if relevant."
+        else:
+            context_instruction = "Provide general news coverage for this topic."
 
-        # NewsAPI 데이터 수집 (번역된 검색어 사용)
-        base_url = "https://newsapi.org/v2/everything" if search_query else "https://newsapi.org/v2/top-headlines"
-        params = {
-            "q": search_target,
-            "language": "en", # 정보량이 가장 많은 영어 뉴스 기반 수집
-            "pageSize": 12,
-            "apiKey": NEWS_API_KEY
-        }
-        if not search_query: params["category"] = category
-
-        try:
-            response = requests.get(base_url, params=params)
-            data = response.json()
-            
-            if data.get("status") == "ok" and data.get("articles"):
-                articles = data["articles"]
-                context = ""
-                for i, art in enumerate(articles):
-                    context += f"기사 {i+1}: {art.get('title')}\n내용: {art.get('description')}\n\n"
-
+    trans_prompt = f"""
+    Translate '{search_query}' into an English keyword for a News API.
+    
+    [Instruction]
+    {context_instruction}
+    
+    Output ONLY the final optimized search string.
+    """
+    
+    trans_res = model.generate_content(trans_prompt)
+    search_target = trans_res.text.strip()
+    st.toast(f"🔍 {category} 맞춤형 최적화: {search_target}")
                 # 브리핑 리포트 생성 (선택한 user_lang 반영)
                 report_prompt = f"다음 뉴스 데이터를 분석하여 {user_lang}로 리포트를 작성해줘. 이슈별 그룹화와 전문가적 분석을 포함할 것.\n데이터: {context}"
                 result = model.generate_content(report_prompt)
